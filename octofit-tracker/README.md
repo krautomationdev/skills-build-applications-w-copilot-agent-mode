@@ -46,6 +46,28 @@ npm run build --prefix octofit-tracker/backend
 npm run build --prefix octofit-tracker/frontend
 ```
 
+## Validation
+
+Validate the backend and database setup:
+
+```bash
+# Start the backend in the backend folder
+npm run dev --prefix octofit-tracker/backend
+```
+
+In a separate terminal:
+
+```bash
+curl http://localhost:8000/
+curl http://localhost:8000/api/users
+```
+
+Verify the database is populated and connected:
+
+```bash
+npm run seed --prefix octofit-tracker/backend
+```
+
 ## Notes
 
 - The frontend uses React 19, Vite, React Router, and Bootstrap.
