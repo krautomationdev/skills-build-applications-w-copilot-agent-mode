@@ -5,6 +5,10 @@ function Leaderboard() {
   const [entries, setEntries] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
+  const resolvedApiHost = codespaceName
+    ? `https://${codespaceName}-8000.app.github.dev`
+    : 'http://localhost:8000';
 
   useEffect(() => {
     async function loadLeaderboard() {
@@ -25,8 +29,8 @@ function Leaderboard() {
     <div className="container py-4">
       <h1>Leaderboard</h1>
       <p>
-        Fetching from <code>{`${apiHost}/leaderboard`}</code>
-        {useCodespaceUrl ? ' via Codespaces URL' : ' using localhost fallback'}.
+        Fetching from <code>{`${resolvedApiHost}/api/leaderboard/`}</code>
+        {codespaceName ? ' via Codespaces URL' : ' using localhost fallback'}.
       </p>
       {loading && <p>Loading leaderboard...</p>}
       {error && <div className="alert alert-danger">{error}</div>}

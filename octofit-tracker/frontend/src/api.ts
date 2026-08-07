@@ -1,15 +1,15 @@
-const codespaceName = import.meta.env.VITE_CODESPACE_NAME;
+const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
 const fallbackHost = 'http://localhost:8000';
 
-export const apiHost = codespaceName?.trim()
+export const apiHost = codespaceName
   ? `https://${codespaceName}-8000.app.github.dev`
   : fallbackHost;
 
 export const apiBaseUrl = `${apiHost}/api`;
-export const useCodespaceUrl = Boolean(codespaceName?.trim());
+export const useCodespaceUrl = Boolean(codespaceName);
 
 export function apiUrl(resource: string) {
-  return `${apiBaseUrl}/${resource}`;
+  return `${apiBaseUrl}/${resource}/`;
 }
 
 function normalizeResponse(body: any): any {

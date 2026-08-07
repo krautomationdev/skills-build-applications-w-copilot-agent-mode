@@ -5,6 +5,10 @@ function Workouts() {
   const [workouts, setWorkouts] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
+  const resolvedApiHost = codespaceName
+    ? `https://${codespaceName}-8000.app.github.dev`
+    : 'http://localhost:8000';
 
   useEffect(() => {
     async function loadWorkouts() {
@@ -25,8 +29,8 @@ function Workouts() {
     <div className="container py-4">
       <h1>Workouts</h1>
       <p>
-        Fetching from <code>{`${apiHost}/workouts`}</code>
-        {useCodespaceUrl ? ' via Codespaces URL' : ' using localhost fallback'}.
+        Fetching from <code>{`${resolvedApiHost}/api/workouts/`}</code>
+        {codespaceName ? ' via Codespaces URL' : ' using localhost fallback'}.
       </p>
       {loading && <p>Loading workouts...</p>}
       {error && <div className="alert alert-danger">{error}</div>}
