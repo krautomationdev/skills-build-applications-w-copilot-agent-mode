@@ -8,6 +8,7 @@ router.get('/', async (_req, res) => {
     const users = await User.find().select('-passwordHash');
     res.json(users);
   } catch (error) {
+    console.error('Error fetching users:', error);
     res.status(500).json({ error: 'Unable to fetch users' });
   }
 });
