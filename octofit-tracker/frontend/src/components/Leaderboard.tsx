@@ -1,20 +1,24 @@
 import { useEffect, useState } from 'react';
-import { fetchApi, apiHost, useCodespaceUrl } from '../api';
 
 function Leaderboard() {
   const [entries, setEntries] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
-  const resolvedApiHost = codespaceName
-    ? `https://${codespaceName}-8000.app.github.dev`
-    : 'http://localhost:8000';
+  const apiEndpoint = codespaceName
+    ? `https://${codespaceName}-8000.app.github.dev/api/leaderboard/`
+    : 'http://localhost:8000/api/leaderboard/';
 
   useEffect(() => {
     async function loadLeaderboard() {
       try {
-        const data = await fetchApi('leaderboard');
-        setEntries(data);
+        const response = await fetch(apiEndpoint);
+        if (!response.ok) {
+          const body = await response.json().catch(() => ({}));
+          throw new Error(body?.error || `${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
+        setEntries(Array.isArray(data) ? data : data?.results || data?.data || data?.items || []);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -23,13 +27,13 @@ function Leaderboard() {
     }
 
     loadLeaderboard();
-  }, []);
+  }, [apiEndpoint]);
 
   return (
     <div className="container py-4">
       <h1>Leaderboard</h1>
       <p>
-        Fetching from <code>{`${resolvedApiHost}/api/leaderboard/`}</code>
+        Fetching from <code>{apiEndpoint}</code>
         {codespaceName ? ' via Codespaces URL' : ' using localhost fallback'}.
       </p>
       {loading && <p>Loading leaderboard...</p>}

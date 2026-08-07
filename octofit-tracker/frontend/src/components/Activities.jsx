@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { fetchApi } from '../api';
 
 function Activities() {
   const [activities, setActivities] = useState([]);
@@ -7,14 +6,19 @@ function Activities() {
   const [loading, setLoading] = useState(true);
 
   const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
-  const resolvedApiHost = codespaceName
-    ? `https://${codespaceName}-8000.app.github.dev`
-    : 'http://localhost:8000';
+  const apiEndpoint = codespaceName
+    ? `https://${codespaceName}-8000.app.github.dev/api/activities/`
+    : 'http://localhost:8000/api/activities/';
 
   useEffect(() => {
     async function loadActivities() {
       try {
-        const data = await fetchApi('activities');
+        const response = await fetch(apiEndpoint);
+        if (!response.ok) {
+          const body = await response.json().catch(() => ({}));
+          throw new Error(body?.error || `${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
         setActivities(Array.isArray(data) ? data : data?.results || data?.data || data?.items || []);
       } catch (err) {
         setError(err.message || 'Unable to load activities');
@@ -24,13 +28,13 @@ function Activities() {
     }
 
     loadActivities();
-  }, []);
+  }, [apiEndpoint]);
 
   return (
     <div className="container py-4">
       <h1>Activities</h1>
       <p>
-        Fetching from <code>{`${resolvedApiHost}/api/activities`}</code>
+        Fetching from <code>{apiEndpoint}</code>
         {codespaceName ? ' via Codespaces URL' : ' using localhost fallback'}.
       </p>
       {loading && <p>Loading activities...</p>}
