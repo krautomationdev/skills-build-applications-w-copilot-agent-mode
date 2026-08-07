@@ -68,6 +68,26 @@ Verify the database is populated and connected:
 npm run seed --prefix octofit-tracker/backend
 ```
 
+## Frontend Codespaces setup
+
+In `octofit-tracker/frontend/.env.local`, define `VITE_CODESPACE_NAME`.
+
+```env
+VITE_CODESPACE_NAME=your-codespace-name
+```
+
+The frontend builds API URLs using:
+
+```text
+https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/[resource]
+```
+
+If `VITE_CODESPACE_NAME` is not set, the frontend safely falls back to:
+
+```text
+http://localhost:8000/api/[resource]
+```
+
 ## Notes
 
 - The frontend uses React 19, Vite, React Router, and Bootstrap.
